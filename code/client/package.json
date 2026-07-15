@@ -1,0 +1,8 @@
+{
+  "name": "bulk-domain-checker-client",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {"dev":"vite","build":"tsc -b && vite build","test":"vitest run","lint":"tsc -b --pretty false"},
+  "dependencies": {"@vitejs/plugin-react":"latest","vite":"latest","react":"latest","react-dom":"latest"},
+  "devDependencies": {"@types/node":"latest","@types/react":"latest","@types/react-dom":"latest","typescript":"latest","vitest":"latest","jsdom":"latest","tailwindcss":"^3.4.17","postcss":"^8.5.3","autoprefixer":"^10.4.21"}
+}

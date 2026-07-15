@@ -1,0 +1,42 @@
+services:
+  backend:
+    build:
+      context: ./server
+    env_file:
+      - ../.env
+    expose:
+      - "8080"
+    restart: unless-stopped
+    stop_grace_period: 15s
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/api/health"]
+      interval: 15s
+      timeout: 3s
+      start_period: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./client
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost/"]
+      interval: 15s
+      timeout: 3s
+      start_period: 5s
+      retries: 5
+
+  cloudflared:
+    image: cloudflare/cloudflared:2026.7.0
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      frontend:
+        condition: service_healthy
+    profiles:
+      - tunnel
+    restart: unless-stopped

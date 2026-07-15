@@ -1,0 +1,5 @@
+export type Result={domain:string;status:'AVAILABLE'|'TAKEN'|'ERROR';checkedAt:string;error:string|null};
+export const splitDomains=(text:string)=>text.split(/[\s,;]+/).map(x=>x.trim()).filter(Boolean);
+export const normalize=(raw:string)=>{try{let value=raw.trim().toLowerCase();if(!/^https?:\/\//.test(value))value='https://'+value;const host=new URL(value).hostname.replace(/\.$/,'');const labels=host.split('.');if(labels.length<2||!labels.every(x=>/^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$|^[a-z0-9]$/.test(x))||!/^[a-z]{2,63}$/.test(labels.at(-1)!))return null;return host}catch{return null}};
+export const inspectInput=(text:string)=>{const raw=splitDomains(text), seen=new Set<string>(),invalid:string[]=[];let duplicates=0;for(const value of raw){const d=normalize(value);if(!d)invalid.push(value);else if(seen.has(d))duplicates++;else seen.add(d)}return{detected:raw.length,domains:[...seen],duplicates,invalid}};
+export const csv=(results:Result[])=>'\uFEFFdomain,status,checked_at,error_message\n'+results.map(r=>[r.domain,r.status,r.checkedAt,r.error??''].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');

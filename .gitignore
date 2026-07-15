@@ -1,0 +1,20 @@
+# Local secrets
+.env
+*.env.local
+
+# Go build output
+code/server/api
+code/server/api.exe
+code/server/coverage.out
+
+# Frontend dependencies and build output
+code/client/node_modules/
+code/client/dist/
+code/client/coverage/
+
+# Tooling
+*.tsbuildinfo
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

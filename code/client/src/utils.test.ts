@@ -1,0 +1,3 @@
+import{describe,it,expect}from'vitest';import{csv,inspectInput}from'./utils';
+describe('input inspection',()=>{it('normalizes URLs and removes duplicates',()=>{const r=inspectInput('HTTPS://EXAMPLE.COM/a, example.com; bright.id');expect(r.domains).toEqual(['example.com','bright.id']);expect(r.duplicates).toBe(1)});it('reports invalid input',()=>expect(inspectInput('nope, valid.com').invalid).toEqual(['nope']))});
+describe('csv',()=>it('escapes quotes and commas',()=>expect(csv([{domain:'a,b.com',status:'ERROR',checkedAt:'now',error:'say "no"'}])).toContain('"a,b.com","ERROR","now","say ""no"""')));
