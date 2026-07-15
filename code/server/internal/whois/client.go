@@ -72,6 +72,7 @@ func (c *Client) checkOnce(parent context.Context, domain string) (Status, error
 	var payload struct {
 		Availability       string `json:"availability"`
 		DomainAvailability string `json:"domain_availability"`
+		DomainAvailable    *bool  `json:"domainAvailability"`
 		Available          any    `json:"available"`
 	}
 	if err := json.NewDecoder(io.LimitReader(resp.Body, 1<<20)).Decode(&payload); err != nil {
@@ -82,6 +83,12 @@ func (c *Client) checkOnce(parent context.Context, domain string) (Status, error
 		v = strings.ToUpper(strings.TrimSpace(payload.DomainAvailability))
 	}
 	if v == "" {
+		if payload.DomainAvailable != nil {
+			if *payload.DomainAvailable {
+				return Available, nil, false
+			}
+			return Taken, nil, false
+		}
 		if b, ok := payload.Available.(bool); ok {
 			if b {
 				return Available, nil, false
